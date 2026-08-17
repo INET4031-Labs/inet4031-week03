@@ -3,6 +3,10 @@
 # 1. Remove plaintext env vars (POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD)
 #    Replace with: envFrom: - secretRef: name: postgres-credentials
 # 2. Change strategy from Recreate to RollingUpdate
+#
+# NOTE: kompose's default `io.kompose.service` label was replaced with `app: postgres`.
+# Week 4's OpenTofu resource and Week 7's NetworkPolicy/RBAC manifests select on
+# `app:`, not `io.kompose.service:` -- keep this label scheme going forward.
 
 apiVersion: apps/v1
 kind: Deployment
@@ -12,7 +16,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: postgres
+      app: postgres
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,7 +25,7 @@ spec:
   template:
     metadata:
       labels:
-        io.kompose.service: postgres
+        app: postgres
     spec:
       containers:
       - name: postgres
