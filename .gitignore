@@ -1,0 +1,16 @@
+# Kubeconfig obtained from the k3d cluster - team-specific, never commit
+kubeconfig
+*.kubeconfig
+.kube/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.log
