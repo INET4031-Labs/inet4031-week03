@@ -4,39 +4,7 @@
 
 **Sprint 2 Deliverables:** Container orchestration with k3d and Kubernetes manifests
 
-## Part 1: Review Prior Sprint (Sprint 1)
-
-Answer these questions about Sprint 1. Record your answers below.
-
-- What did you contribute to Sprint 1?
-  
-  TODO: Each team member answers
-  
-- What is the most important thing the team shipped?
-  
-  TODO: Team consensus answer
-  
-- What would you do differently if Sprint 1 started again?
-  
-  TODO: Team reflection
-
-## Part 2: Container State Checkpoint (Before Sprint 2 Closes)
-
-Record the output of the following commands run inside your team container:
-
-```bash
-docker ps
-docker compose -f week-2/docker-compose.yml ps
-git log --oneline -5
-```
-
-**Output:**
-
-```
-TODO: Paste terminal output here
-```
-
-## Part 3: Sprint 2 Close
+## Part 1: Sprint 2
 
 This section is completed after Week 3 lab work is finished.
 
@@ -55,9 +23,9 @@ TODO: Document any significant decisions about cluster setup, manifest fixes, or
 
 TODO: What went wrong and how did the team work around it?
 
-## Part 4: Sprint 3 Kickoff Prep
+## Part 4: Sprint 2 (Week 4) Prep
 
-Answer these questions to prepare for the next sprint:
+Answer these questions to prepare for the next week:
 
 - What is the state of our Kubernetes cluster right now?
   
