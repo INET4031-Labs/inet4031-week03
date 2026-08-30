@@ -1,252 +1,180 @@
-# QA Report: Sprint 2 (Week 3)
+# QA Report: Sprint 2 Week 3
 
-**QA Lead:** TODO
+**Owned by:** QA
 
-**Report Date:** TODO
+This report documents the results of validation testing at the end of the synchronous Week 3 session. It includes check script results, acceptance criteria verification, and any rework required before marking deliverables complete.
 
-**Sprint:** Sprint 2 (Week 3: Container Orchestration with k3d)
-
----
-
-## Executive Summary
-
-TODO: One or two sentences summarizing the state of Week 3 deliverables. Are all acceptance criteria met? Are there any blockers or concerns?
-
----
-
-## Test Coverage Summary
-
-### Part 1: k3d Cluster Creation
-
-**Tests Run:**
-
-- [ ] k3d installation verification
-- [ ] Cluster existence check
-- [ ] Node count and status verification
-- [ ] LoadBalancer port mapping verification
-- [ ] kubectl connectivity check
-
-**Summary:** TODO: What worked? What failed? Any retries needed?
-
-**Confidence Level:** TODO: (High / Medium / Low)
-
----
-
-### Part 2: Docker Compose to Kubernetes Manifests
-
-**Tests Run:**
-
-- [ ] kompose installation verification
-- [ ] Manifest file generation (all required files present)
-- [ ] Plaintext credential identification (before fix)
-- [ ] Credential fix verification (Secrets created, Deployments use envFrom)
-- [ ] Recreate strategy identification (before fix)
-- [ ] RollingUpdate strategy verification (after fix)
-
-**Plaintext Credential Issues Found:**
-
-TODO: List any env vars still visible as plaintext in Deployments
-
-```
-Example: flask-deployment.yaml line 25 still shows POSTGRES_PASSWORD: changeme
-```
-
-**Strategy Issues Found:**
-
-TODO: List any Deployments still using Recreate strategy
-
-```
-Example: nginx-deployment.yaml still uses strategy: type: Recreate
-```
-
-**Summary:** TODO: Were all security fixes successfully applied?
-
-**Confidence Level:** TODO: (High / Medium / Low)
-
----
-
-### Part 3: Deploy and Verify
-
-**Tests Run:**
-
-- [ ] Secret manifest application (flask-secret.yaml)
-- [ ] Secret manifest application (postgres-secret.yaml)
-- [ ] Full manifests deployment
-- [ ] Pod startup and readiness
-- [ ] Application health check
-- [ ] Rolling update behavior during scale-up
-
-**Pod Status at Test Time:**
-
-```
-TODO: Paste kubectl get pods output
-```
-
-**Health Check Result:**
-
-```bash
-curl http://localhost:8080/health
-```
-
-Result: TODO
-
-**Rolling Update Behavior:**
-
-TODO: Describe what happened when scaling Flask to 2 replicas:
-- Did the first pod stay Running? (Yes/No)
-- Did the second pod start without bringing the first one down? (Yes/No)
-- Did the application remain healthy during the update? (Yes/No)
-
-**Issues Found During Deployment:**
-
-TODO: List any problems encountered:
-- Pods stuck in Pending (if so, why?)
-- Pods in CrashLoopBackOff (if so, check logs: kubectl logs <pod-name>)
-- Service not responding (if so, check LoadBalancer: kubectl get svc)
-- Database connectivity issues (if so, check environment variables)
-
-**Summary:** TODO: Is the application deployed and functional?
-
-**Confidence Level:** TODO: (High / Medium / Low)
-
----
-
-### Part 4: Ansible Update
-
-**Tests Run:**
-
-- [ ] k3d-setup role directory structure
-- [ ] main.yml contents (k3d install task, cluster creation task)
-- [ ] ansible/site.yml includes k3d-setup role
-- [ ] Playbook executes without error on first run
-- [ ] Playbook is idempotent (no changes on second run)
-
-**First Playbook Run Output:**
-
-```
-TODO: Paste relevant lines from ansible-playbook output
-```
-
-**Second Playbook Run Output (idempotency check):**
-
-```
-TODO: Paste PLAY RECAP showing changed=0
-```
-
-**Issues Found:**
-
-TODO: List any Ansible errors or warnings
-
-**Summary:** TODO: Is the Ansible role correctly written and idempotent?
-
-**Confidence Level:** TODO: (High / Medium / Low)
+This file is completed at the end of Week 3 after the application is fully deployed to the k3d cluster and tested.
 
 ---
 
 ## Validation Check Results
 
-### Automated Script: ./scripts/check-week3.sh
+### Check 1: k3d Cluster Is Running
 
-**Script Status:** TODO: (Passing / Failing)
+**Test:** Run `k3d cluster list`
 
-**Output:**
+**Expected:** One row showing `myapp` with `SERVERS 1/1` and `AGENTS 2/2` (all nodes up)
 
+**Actual Result:**
 ```
-TODO: Paste full output of check-week3.sh
+TODO: Paste the actual output of k3d cluster list
 ```
 
-**Individual Check Results:**
+**Status:** TODO: [ ] Pass [ ] Fail
 
-1. k3d Cluster Running: TODO: (Pass / Fail)
-2. All Pods Running: TODO: (Pass / Fail)
-3. Credentials in Secret: TODO: (Pass / Fail)
-4. RollingUpdate Strategy: TODO: (Pass / Fail)
+**Notes:** If any nodes aren't up, what did `kubectl describe node <node-name>` reveal?
 
 ---
 
-## Screenshots and Evidence
+### Check 2: All Pods Running
 
-**Required Screenshots in Google Doc:**
+**Test:** Run `kubectl get pods`
 
-- [ ] Screenshot 1: kompose output showing plaintext env vars and Recreate strategy (before fixes)
-- [ ] Screenshot 2: kubectl get pods showing all pods Running
-- [ ] Screenshot 3: Rolling update in progress (two Flask pods visible)
-- [ ] Screenshot 4: ./scripts/check-week3.sh passing
+**Expected:** All pods in `Running` state with `1/1` in READY
 
-**Google Doc Link:** TODO
+**Actual Result:**
+```
+TODO: Paste the actual output of kubectl get pods
+```
 
----
+**Status:** TODO: [ ] Pass [ ] Fail
 
-## Risk Assessment
-
-### Critical Issues (Blocking Deliverables)
-
-TODO: List any issues that prevent the lab from being marked complete:
-
-Example:
-- k3d cluster fails to start: prevented team from testing Kubernetes deployment
-- Plaintext passwords still visible in Deployments: security fix not applied
-
-**Resolution:** TODO
-
-### Medium Issues (Quality Concerns)
-
-TODO: List issues that work but have quality concerns:
-
-Example:
-- Playbook takes 5 minutes to run (idempotency is correct but performance is slow)
-- Certificate warnings when accessing LoadBalancer (TLS not configured)
-
-**Resolution:** TODO
-
-### Low Issues (Documentation / Polish)
-
-TODO: List minor issues:
-
-Example:
-- Comments missing from manifests
-- No description of what each Secret contains
-
-**Resolution:** TODO
+**Notes:** If any pod is not Running (Pending, CrashLoopBackOff, ErrImagePull), what did `kubectl describe pod <pod-name>` or `kubectl logs <pod-name>` reveal?
 
 ---
 
-## Team Coordination Notes
+### Check 3: Credentials Are in a Secret, Not a Deployment
 
-**Cross-Role Dependencies:**
+**Test:** Run `kubectl get deployment flask -o jsonpath='{.spec.template.spec.containers[0].env}'` and `kubectl get deployment db -o jsonpath='{.spec.template.spec.containers[0].env}'`, then `kubectl get secret flask-credentials` and `kubectl get secret db-credentials`
 
-TODO: Did any role depend on another role's work? Did dependencies get cleared promptly?
+**Expected:** Both deployment env outputs are empty (no output) or show only non-credential variables; both Secrets exist
 
-Example:
-- Developers created manifests, then System Admin applied Ansible changes
-- QA had to wait for Developers to fix strategy before validating
+**Actual Result:**
+```
+TODO: Paste the actual output
+```
 
-**Blockers and How They Were Resolved:**
+**Status:** TODO: [ ] Pass [ ] Fail
 
-TODO: What got stuck? How did the team resolve it?
+**Notes:** If credentials are still visible in either Deployment, which one and what variable?
 
 ---
 
-## Lessons Learned
+### Check 4: RollingUpdate Strategy Applied
 
-**What went well this week:**
+**Test:** Run `kubectl get deployment db -o jsonpath='{.spec.strategy.type}'`
 
-TODO: Positive observations about the process or deliverables
+**Expected:** `RollingUpdate`
 
-**What could be improved next week:**
+**Actual Result:** TODO: Record the strategy type returned
 
-TODO: Suggestions for smoother workflow, clearer documentation, earlier communication, etc.
+**Status:** TODO: [ ] Pass [ ] Fail
+
+**Notes:** This checks the `db` Deployment, not `flask` — kompose only generates a `Recreate` strategy for services with a volume mount, and only `db` has one.
+
+---
+
+### Check 5: Check Script Passes
+
+**Test:** Run `chmod +x scripts/check-week3.sh` then `./scripts/check-week3.sh`
+
+**Expected:** All checks pass with exit code 0
+
+**Actual Result:**
+```
+TODO: Paste the full output of the check script
+```
+
+**Status:** TODO: [ ] Pass [ ] Fail
+
+**Notes:** If any checks failed, what did the script report?
+
+---
+
+## Acceptance Criteria Verification
+
+Review the criteria below for each part of this week's deliverables. For each criterion, record whether it was met:
+
+### Part 1: k3d Cluster Creation
+
+TODO: [ ] k3d cluster `myapp` created with 1 server and 2 agent nodes
+TODO: [ ] Traefik disabled at cluster creation (`--k3s-arg "--disable=traefik@server:0"`)
+TODO: [ ] `kubectl get nodes` shows all three nodes `Ready`
+
+### Part 2: Docker Compose to Kubernetes Manifests
+
+TODO: [ ] `kompose convert` generated a Deployment and Service for `db`, `flask`, and `nginx`, plus a PersistentVolumeClaim and ConfigMap
+TODO: [ ] All `io.kompose.service` labels replaced with `app:` labels
+TODO: [ ] Plaintext credentials moved to `flask-secret.yaml` and `db-secret.yaml`; Deployments use `envFrom`/`secretRef`
+TODO: [ ] `db-deployment.yaml` strategy changed from `Recreate` to `RollingUpdate`
+TODO: [ ] `flask-deployment.yaml` image reference fixed to the locally built image (not the kompose placeholder) and imported into the cluster with `k3d image import`
+TODO: [ ] `nginx-service.yaml` changed from `ClusterIP` to `LoadBalancer`
+TODO: [ ] `db-deployment.yaml` liveness probe command split into separate array items
+
+### Part 3: Deploy and Verify
+
+TODO: [ ] Secrets applied before other manifests
+TODO: [ ] All pods reach `Running` / `1/1` Ready
+TODO: [ ] Application responds at `http://localhost:8081/health`
+TODO: [ ] Scaling `flask` to 2 replicas demonstrates a rolling update (new pod comes up before old one terminates)
+
+### Part 4: Ansible Update
+
+TODO: [ ] `ansible/roles/k3d-setup/tasks/main.yml` installs k3d and creates the cluster idempotently
+TODO: [ ] `ansible/site.yml` includes the k3d-setup play
+TODO: [ ] `app-stack` play commented out in `ansible/site.yml` (Kubernetes now supersedes Docker Compose)
+TODO: [ ] Playbook runs clean end to end
+
+---
+
+## Deliverables Verification
+
+### Required Files
+
+TODO: [ ] `manifests/` directory is committed with all Kubernetes manifests (Deployments, Services, Secrets, PVC, ConfigMap)
+TODO: [ ] `manifests/flask-secret.yaml` and `manifests/db-secret.yaml` are committed
+TODO: [ ] `ansible/site.yml` includes the k3d-setup play (and has `app-stack` commented out)
+TODO: [ ] `ansible/roles/k3d-setup/tasks/main.yml` is committed
+TODO: [ ] `week-2/docker-compose.yml` is committed with the `ports:` entries added for `db` and `flask`
+
+### GitHub Repository
+
+TODO: [ ] All changes are pushed to the main branch
+TODO: [ ] GitHub Project board shows all Week 3 tasks completed
+
+### Google Doc
+
+TODO: [ ] Sprint 1 close-out answers are recorded
+TODO: [ ] Sprint 2 kickoff environment state checkpoint is recorded
+TODO: [ ] Week 3 discussion answers are recorded (k3d resource competition, kompose translation risks, RollingUpdate vs. Recreate, Secret encoding vs. encryption, PostgreSQL data durability)
+TODO: [ ] Required screenshots are attached: kompose output showing plaintext env vars and Recreate strategy (before fixes), `kubectl get pods` showing all pods Running, rolling update in progress (two Flask pods visible), `./scripts/check-week3.sh` passing
+TODO: [ ] Week 3 storage check values are recorded
+
+---
+
+## Rework Required
+
+If any validation checks or acceptance criteria failed, document the rework needed:
+
+**Issues Found:**
+```
+TODO: List any failures here
+```
+
+**Rework Plan:**
+```
+TODO: For each failure, describe the steps to fix it and who will do the work
+```
+
+**Re-validation Date:** TODO: When will rework be complete?
 
 ---
 
 ## Sign-Off
 
-**QA Lead:** TODO (Signature or confirmation)
+**QA Name:** ______________________
+**Date Signed:** ______________________
+**Overall Status:** TODO: [ ] All Criteria Met [ ] Rework Required
 
-**Date:** TODO
-
-**Status:** TODO: (APPROVED / APPROVED WITH CONCERNS / NOT APPROVED)
-
-**Comments:**
-
-TODO: Any final remarks about this week's deliverables
+**Notes:** Any final observations about the sprint's technical quality and team coordination.
