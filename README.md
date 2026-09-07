@@ -1,6 +1,6 @@
 # Week 3: Container Orchestration with k3d
 
-**Sprint 2 Kickoff | Synchronous**
+**Sprint 2 Kickoff**
 
 ## Overview
 
