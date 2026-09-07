@@ -1,40 +1,33 @@
 # Sprint 2 Retrospective
 
-**Date:** [TODO: Fill in completion date]
+**Owned by:** Scrum Master
 
-**Sprint 2 Deliverables:** Container orchestration with k3d and Kubernetes manifests
+This file is completed at the end of week 4. Review what your team shipped, what went well, what went poorly, and one specific process change for Sprint 3.
 
-## Part 1: Sprint 2
+## What Went Well
 
-This section is completed after Week 3 lab work is finished.
+TODO: What did your team do well this sprint? What accomplishment are you proud of?
 
-### What we shipped
+## What Could Be Better
 
-TODO: List key deliverables from Week 3
-- k3d cluster created and running
-- Kubernetes manifests generated and fixed
-- [Add other achievements]
+TODO: What was difficult? What slowed you down? What surprised you?
 
-### Critical decisions and trade-offs
+## What We'll Do Differently Next Sprint
 
-TODO: Document any significant decisions about cluster setup, manifest fixes, or deployment strategy
+TODO: Based on what you learned, name one specific process change or workflow improvement you will try in Sprint 3.
 
-### Blockers and how we resolved them
+## Team Contributions
 
-TODO: What went wrong and how did the team work around it?
+Use this section to note which team members led which parts of the work:
 
-## Part 4: Sprint 2 (Week 4) Prep
+| Role | Name | Primary Contribution |
+|---|---|---|
+| Scrum Master | | |
+| System Admin | | |
+| QA | | |
+| Developer 1 | | |
+| Developer 2+ | | |
 
-Answer these questions to prepare for the next week:
+## Notes
 
-- What is the state of our Kubernetes cluster right now?
-  
-  TODO: Current cluster status
-  
-- If the team container restarts, what happens to our k3d cluster and why?
-  
-  TODO: Discuss recovery and persistence implications
-  
-- How confident is the team in the security fixes we made to the manifests?
-  
-  TODO: Reflection on credential handling and deployment strategy
+Any additional context about the sprint that does not fit the structure above.
