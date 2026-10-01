@@ -174,11 +174,17 @@ echo "Check 5: Application Health Check"
 echo "-----------------------------------"
 
 if command -v curl &> /dev/null; then
-    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/health 2>/dev/null || echo "000")
+    # Kubernetes port is the team's Week 2 HOST_PORT + 10 (e.g. 8083 -> 8093)
+    if [ -f "$REPO_ROOT/week-2/.env" ]; then
+        HOST_PORT=$(grep -E "^HOST_PORT=" "$REPO_ROOT/week-2/.env" | cut -d '=' -f2)
+    fi
+    KUBE_PORT=$(( ${HOST_PORT:-8071} + 10 ))
+
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${KUBE_PORT}/health 2>/dev/null || echo "000")
     if [ "$HTTP_CODE" = "200" ]; then
-        check_pass "Application responds to health check at http://localhost:8081/health (HTTP $HTTP_CODE)"
+        check_pass "Application responds to health check at http://localhost:${KUBE_PORT}/health (HTTP $HTTP_CODE)"
     else
-        check_warn "Application not responding to health check at http://localhost:8081/health (HTTP $HTTP_CODE) - may still be starting"
+        check_warn "Application not responding to health check at http://localhost:${KUBE_PORT}/health (HTTP $HTTP_CODE) - may still be starting, or HOST_PORT in week-2/.env doesn't match your assigned port"
     fi
 else
     check_warn "curl not available - skipping health check"
