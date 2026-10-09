@@ -20,19 +20,6 @@ In this lab, you move the incident tracking application from Docker Compose into
 - Docker daemon is running inside the team container (nested Docker)
 - kubectl and k3d are available or installable inside the team container
 
-## Pulling This Week's Starter Content Into Your Team Repo
-
-This repo (`inet4031-week03`) is instructor-provided starter/reference content for
-Week 3, not something you clone standalone. Pull the pieces you need into your
-team's single repo:
-
-```bash
-git remote add week3 https://github.com/INET4031-Labs/inet4031-week03.git
-git fetch week3
-git checkout week3/main -- manifests scripts docs
-git remote remove week3
-```
-
 Do this before you start editing `manifests/` locally, or your local changes will be
 silently overwritten by the checkout. Note: this week does not ship
 `ansible/roles/k3d-setup` starter content, you write the k3d-setup role
